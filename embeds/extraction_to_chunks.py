@@ -13,8 +13,6 @@ from sentence_transformers import SentenceTransformer
 }
 '''
 
-
-
 def fetch_text_from_url(url: str) -> str:
     response = requests.get(url)
     html = response.text
