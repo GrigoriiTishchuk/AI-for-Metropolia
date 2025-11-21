@@ -57,3 +57,4 @@ def process_url(url: str):
             "embedding": emb.tolist()
         })
     return processed
+

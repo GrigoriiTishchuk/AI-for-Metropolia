@@ -2,9 +2,12 @@ from flask import Flask, request, jsonify
 from uuid import uuid4
 import psycopg2
 import requests
+from sentence_transformers import SentenceTransformer
 
+# Setup section
 app = Flask(__name__)
-# Database connection
+# Database connection, we use PostgreSQL pgvector extension for vector storage of 
+# our chunks of text
 conn = psycopg2.connect(
     host="localhost",
     database="metropolia",
@@ -12,6 +15,7 @@ conn = psycopg2.connect(
     password="pass"
 )
 
+embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 def get_or_create_chat(chat_id=None):
     cur = conn.cursor()
@@ -68,6 +72,8 @@ def chat():
 
     save_message(chat_id, "user", user_msg)
     history = load_history(chat_id)
+    user_embedding = embedder.encode([user_msg], convert_to_numpy=True)[0]  # numpy array
+
     llm_answer = ask_llm(history)
 
     save_message(chat_id, "assistant", llm_answer)
