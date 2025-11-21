@@ -1,7 +1,7 @@
 import requests
 from readability import Document
 from bs4 import BeautifulSoup
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
 ''' Example output chunk:
@@ -16,17 +16,13 @@ from sentence_transformers import SentenceTransformer
 def fetch_text_from_url(url: str) -> str:
     response = requests.get(url)
     html = response.text
-
     # Use Readability to extract main content
     doc = Document(html)
     readable_html = doc.summary()
-
     # Parse readable HTML
     soup = BeautifulSoup(readable_html, "html.parser")
-
     # Extract text only
     text = soup.get_text(separator="\n")
-
     # Clean up whitespace
     clean_text = "\n".join([line.strip() for line in text.split("\n") if line.strip() != ""])
     return clean_text
@@ -52,7 +48,6 @@ def process_url(url: str):
     text = fetch_text_from_url(url)
     chunks = chunk_text(text)
     embeddings = embed_chunks(chunks)
-
     processed = []
     for idx, (chunk, emb) in enumerate(zip(chunks, embeddings)):
         processed.append({
