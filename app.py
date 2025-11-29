@@ -108,12 +108,18 @@ def ask_llm(history, retrieved_chunks):
         json={"model": "llama3", "messages": full_messages}
     )
 
-    try:
-        return res.json()["message"]["content"]
-    except json.JSONDecodeError:
-        # fallback: return raw text
-        print("LLM response not valid JSON:", res.text[:1000])
-        return res.text.strip()
+    # Split response by lines, parse JSON, and concatenate content
+    content = ""
+    for line in res.text.strip().split("\n"):
+        if not line:
+            continue
+        try:
+            data = json.loads(line)
+            content += data.get("message", {}).get("content", "")
+        except json.JSONDecodeError:
+            continue
+
+    return content
 
 
 # Chat endpoint
