@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import json
 from uuid import uuid4
 import psycopg2
 import requests
@@ -63,21 +64,32 @@ def load_history(chat_id):
 
 
 # Retriever with pgvector
-def retrieve_top_k(user_embedding, k=3):
+def retrieve_top_k(query_embedding, k=3):
+    # Ensure Python floats
+    query_embedding = [float(x) for x in query_embedding]
+    conn = psycopg2.connect(
+        host=os.getenv("DB_HOST"),
+        database=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        port=os.getenv("DB_PORT")
+    )
     cur = conn.cursor()
-
-    # pgvector requires Python list, not numpy
-    emb_list = user_embedding.tolist()
-
-    cur.execute("""
+    # Use the vector literal syntax for pgvector
+    # e.g., '[0.1, 0.2, 0.3]'::vector
+    vector_literal = '[' + ','.join(map(str, query_embedding)) + ']'
+    cur.execute(f"""
         SELECT text
         FROM chunks
-        ORDER BY embedding <-> %s
+        ORDER BY embedding <-> '{vector_literal}'::vector
         LIMIT %s;
-    """, (emb_list, k))
+    """, (k,))
 
     rows = cur.fetchall()
-    return [row[0] for row in rows]
+    cur.close()
+    conn.close()
+
+    return [r[0] for r in rows]
 
 #Ask LLM with RAG
 def ask_llm(history, retrieved_chunks):
@@ -90,13 +102,18 @@ def ask_llm(history, retrieved_chunks):
         + "\n### End of context ###\n"
     )
 
-    # Insert system message at the start
     full_messages = [{"role": "system", "content": system_prompt}] + history
     res = requests.post(
         "http://localhost:11434/api/chat",
         json={"model": "llama3", "messages": full_messages}
     )
-    return res.json()["message"]["content"]
+
+    try:
+        return res.json()["message"]["content"]
+    except json.JSONDecodeError:
+        # fallback: return raw text
+        print("LLM response not valid JSON:", res.text[:1000])
+        return res.text.strip()
 
 
 # Chat endpoint
@@ -109,7 +126,10 @@ def chat():
     save_message(chat_id, "user", user_msg)
     history = load_history(chat_id)
     # Compute embedding of user query
-    user_embedding = embedder.encode([user_msg], convert_to_numpy=True)[0]
+    embedded_tensor = embedder.encode([user_msg])[0]
+    # convert to list for psycopg2. It doesn't accept neither tensor nor numpy array
+    user_embedding = list(embedded_tensor)
+    user_embedding = [float(x) for x in user_embedding]
     retrieved = retrieve_top_k(user_embedding, k=3)
     llm_answer = ask_llm(history, retrieved)
     # Save assistant's message
@@ -123,4 +143,4 @@ def chat():
 
 
 if __name__ == '__main__':
-    app.run(auto_reload=True, host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
