@@ -12,9 +12,14 @@ from sentence_transformers import SentenceTransformer
   "embedding": [0.12, -0.55, ... 384 floats ...]
 }
 '''
-
+# Custom headers to mimic a real browser
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Referer": "https://google.com"
+}
 def fetch_text_from_url(url: str) -> str:
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     html = response.text
     # Use Readability to extract main content
     doc = Document(html)

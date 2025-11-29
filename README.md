@@ -33,7 +33,7 @@ For current demo project will be used a text from [link](https://opiskelija.oma.
 ## LLM Runtime
 * Ollama
 
-Python Environment Setup
+# Python Environment Setup
 1. Install Python 3.12 (or compatible)
 
 Download from python.org

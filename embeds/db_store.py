@@ -1,14 +1,18 @@
 # db_store.py
 import psycopg2
 from extraction_to_chunks import process_url
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # PostgreSQL connection
-
 conn = psycopg2.connect(
-    host="localhost",
-    database="metropolia",
-    user="postgres",
-    password="pass"
+    host=os.getenv("DB_HOST"),
+    database=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    port=os.getenv("DB_PORT")
 )
 cur = conn.cursor()
 
@@ -39,7 +43,6 @@ def store_chunks(url: str):
             INSERT INTO chunks (url, chunk_index, text, embedding)
             VALUES (%s, %s, %s, %s)
         """, (chunk["url"], chunk["chunk_index"], chunk["text"], chunk["embedding"]))
-    
     conn.commit()
     print(f"Stored {len(processed_chunks)} chunks for URL: {url}")
 
@@ -47,8 +50,14 @@ def store_chunks(url: str):
 # Example usage
 if __name__ == "__main__":
     urls = [
-        "https://www.metropolia.fi/en/studies",
-        "https://www.metropolia.fi/en/admissions"
+        "https://www.metropolia.fi/fi",
+        "https://www.metropolia.fi/en", 
+        "https://opinto-opas.metropolia.fi",
+        "https://opinto-opas.metropolia.fi/88094/fi/67/70361/3635/2643", 
+        "https://opinto-opas.metropolia.fi/88094/fi/67/70361",
+        "https://opinto-opas.metropolia.fi?lang=en",
+        "https://opinto-opas.metropolia.fi/88094/fi/67/70361/3635/2643?lang=en", 
+        "https://opinto-opas.metropolia.fi/88094/fi/67/70361?lang=en"
     ]
     for url in urls:
         store_chunks(url)

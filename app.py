@@ -4,20 +4,24 @@ import psycopg2
 import requests
 from sentence_transformers import SentenceTransformer
 import numpy as np
+from dotenv import load_dotenv
+import os
 
 # Setup section
 app = Flask(__name__)
 
+load_dotenv()
+
+# PostgreSQL connection
 conn = psycopg2.connect(
-    host="localhost",
-    database="metropolia",
-    user="postgres",
-    password="pass"
+    host=os.getenv("DB_HOST"),
+    database=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    port=os.getenv("DB_PORT")
 )
 
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
-
-
 # Helper: Chat management
 def get_or_create_chat(chat_id=None):
     cur = conn.cursor()
