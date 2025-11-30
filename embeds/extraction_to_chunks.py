@@ -42,7 +42,7 @@ def chunk_text(text: str):
     )
     return splitter.split_text(text)
 
-embedder = SentenceTransformer("all-MiniLM-L6-v2")  # Lightweight, free, fast
+embedder = SentenceTransformer("all-MiniLM-L6-v2")  # Lightweight, free, fast, not the best
 
 def embed_chunks(chunks):
     embeddings = embedder.encode(chunks, convert_to_numpy=True)

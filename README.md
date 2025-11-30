@@ -18,7 +18,7 @@ It helps students quickly find information across the university’s website (e.
 
 *(NOT YET)* Students can start conversations, return later, and continue where they left off.
 The system retrieves relevant website content using embeddings and assists the user conversationally.
-For current demo project will be used a text from [link](https://opiskelija.oma.metropolia.fi)
+For current demo project will be used a text from [link](https://metropolia.fi) and a bit further
 
 # Tech stack
 ## Python:
@@ -27,7 +27,7 @@ For current demo project will be used a text from [link](https://opiskelija.oma.
 * LangChain
 ## DB:
 * PostgreSQL
-* FAISS
+* PG_Vector
 ## Embeddings
 * Sentence-Transformers
 ## LLM Runtime
@@ -196,6 +196,11 @@ PGROOT not set error → Make sure you set PGROOT correctly in the VS developer 
 nmake not recognized → Use x64 Native Tools Command Prompt with C++ build tools installed.
 
 Permissions → Run terminal as administrator.
+
+# How to boot/run the app
+
+
+
 
 # Authors:
 
