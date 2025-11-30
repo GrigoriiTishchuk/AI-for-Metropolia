@@ -7,10 +7,11 @@ from sentence_transformers import SentenceTransformer
 import numpy as np
 from dotenv import load_dotenv
 import os
+from flask_cors import CORS
 
 # Setup section
 app = Flask(__name__)
-
+CORS(app)
 load_dotenv()
 
 # PostgreSQL connection
