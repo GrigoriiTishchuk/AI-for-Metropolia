@@ -1,11 +1,9 @@
-# db_store.py
 import psycopg2
 from extraction_to_chunks import process_url
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
 # PostgreSQL connection
 conn = psycopg2.connect(
     host=os.getenv("DB_HOST"),
@@ -21,7 +19,6 @@ cur.execute("""
 CREATE EXTENSION IF NOT EXISTS vector;
 """)
 
-
 cur.execute("""
 CREATE TABLE IF NOT EXISTS messages (
     message_id UUID PRIMARY KEY,
@@ -32,14 +29,12 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 """)
 
-
 cur.execute("""
 CREATE TABLE IF NOT EXISTS chats (
     chat_id UUID PRIMARY KEY,
     created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
 """)
-
 
 cur.execute("""
 CREATE TABLE IF NOT EXISTS chunks (
