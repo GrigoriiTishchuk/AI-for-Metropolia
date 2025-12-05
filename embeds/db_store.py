@@ -21,6 +21,26 @@ cur.execute("""
 CREATE EXTENSION IF NOT EXISTS vector;
 """)
 
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS messages (
+    message_id UUID PRIMARY KEY,
+    chat_id UUID REFERENCES chats(chat_id),
+    sender TEXT NOT NULL,
+    content TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT NOW()
+);
+""")
+
+
+cur.execute("""
+CREATE TABLE IF NOT EXISTS chats (
+    chat_id UUID PRIMARY KEY,
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
+""")
+
+
 cur.execute("""
 CREATE TABLE IF NOT EXISTS chunks (
     id SERIAL PRIMARY KEY,

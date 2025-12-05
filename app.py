@@ -27,12 +27,11 @@ embedder = SentenceTransformer("all-MiniLM-L6-v2")
 # Helper: Chat management
 def get_or_create_chat(chat_id=None):
     cur = conn.cursor()
-
     if chat_id:
         cur.execute("SELECT chat_id FROM chats WHERE chat_id=%s;", (chat_id,))
         if cur.fetchone():
             return chat_id
-    
+    # Create a new chat with random UUID
     new_chat = str(uuid4())
     cur.execute("INSERT INTO chats (chat_id) VALUES (%s);", (new_chat,))
     conn.commit()
@@ -41,11 +40,11 @@ def get_or_create_chat(chat_id=None):
 
 def save_message(chat_id, sender, content):
     cur = conn.cursor()
-    mid = str(uuid4())
+    message_id = str(uuid4())
     cur.execute("""
         INSERT INTO messages (message_id, chat_id, sender, content)
         VALUES (%s, %s, %s, %s);
-    """, (mid, chat_id, sender, content))
+    """, (message_id, chat_id, sender, content))
     conn.commit()
 
 
@@ -67,7 +66,6 @@ def load_history(chat_id):
 # Retriever with pgvector
 def retrieve_top_k(query_embedding, k=3):
     # Ensure Python floats
-    query_embedding = [float(x) for x in query_embedding]
     conn = psycopg2.connect(
         host=os.getenv("DB_HOST"),
         database=os.getenv("DB_NAME"),
@@ -104,11 +102,9 @@ def ask_llm(history, retrieved_chunks):
     )
 
     full_messages = [{"role": "system", "content": system_prompt}] + history
-    res = requests.post(
-        "http://localhost:11434/api/chat",
+    res = requests.post("http://localhost:11434/api/chat",
         json={"model": "llama3", "messages": full_messages}
     )
-
     # Split response by lines, parse JSON, and concatenate content
     content = ""
     for line in res.text.strip().split("\n"):
