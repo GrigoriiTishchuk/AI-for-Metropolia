@@ -199,7 +199,12 @@ Permissions → Run terminal as administrator.
 
 # How to boot/run the app
 
+Before you run the app, you need to feed llm using db_store.py, to gather data from urls and put them into the vectors.
 
+After everything is ready, what you need to run are 2 separate terminals:
+One for ollama, one for server.
+
+* Run ollama in one
 
 
 # Authors:
