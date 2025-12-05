@@ -199,15 +199,27 @@ Permissions → Run terminal as administrator.
 
 # How to boot/run the app
 
-Before you run the app, you need to feed llm using db_store.py, to gather data from urls and put them into the vectors.
+Before you run the app, you need to feed llm using db_store.py, to gather data from urls and put them into the vectorDB.
+
+* Run db_store.py
+
+### Now you have your chunks of data(vectors) inside of PostgreSQL
 
 After everything is ready, what you need to run are 2 separate terminals:
 One for ollama, one for server.
 
-* Run ollama in one
+* Run ollama in one terminal 
+```
+ollama run llama3
+```
 
+* Run flask server in the second terminal
+
+After these services running, opend frontend.html in your browser and check this app!
+
+Thank you for checking this app up!
 
 # Authors:
 
 > Metropolia AI Project – Student Developer
-> Grigorii 
+> Grigorii Tishchuk
