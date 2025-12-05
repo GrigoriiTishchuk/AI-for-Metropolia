@@ -204,7 +204,7 @@ Before you run the app, you need to:
 * unzip chunks_precomputed.zip and extract chunks_precomputed.sql to data folder
 * create your PostgreSQL database
 * create tables according to schemas_for_db.txt (use pgAdmin4, DataGrip or terminal - it is up to you)
-* run unzipped file chunks_precomputed.sql (it is encoded in UTF-8, so it must be fine) by using this command
+* run unzipped file chunks_precomputed.sql (it is encoded in UTF-8, so it must be fine) by using this command in the root folder (AI-for-Metropolia) to insert preingested data into chunks table
 ```
 psql -U your_db_username -d your_db_name -f data/chunks_precomputed.sql
 ```
