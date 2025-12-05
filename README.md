@@ -25,6 +25,7 @@ For current demo project will be used a text from [link](https://metropolia.fi) 
 * Flask
 * BeatifulSoup
 * LangChain
+* ultimate-sitemap-parser(usp)
 ## DB:
 * PostgreSQL
 * PG_Vector
@@ -80,6 +81,7 @@ pip install langchain-text-splitters
 * readability-lxml → extract main content from web pages
 * sentence-transformers → generate vector embeddings
 * langchain-text-splitters → split web page text into chunks
+* ultimate-sitemap-parser → get data by sitemap
 
 If using requirements.txt, just run:
 ```
@@ -100,8 +102,6 @@ python
 ```
 
 No errors → all libraries installed correctly.
-
-
 
 # Installation DB guide:
 pgvector Installation Guide (Windows 11)
@@ -199,10 +199,15 @@ Permissions → Run terminal as administrator.
 
 # How to boot/run the app
 
-Before you run the app, you need to feed llm using db_store.py, to gather data from urls and put them into the vectorDB.
-
-* Run db_store.py
-
+Before you run the app, you need to:
+* open /data folder 
+* unzip chunks_precomputed.zip and extract chunks_precomputed.sql to data folder
+* create your PostgreSQL database
+* create tables according to schemas_for_db.txt (use pgAdmin4, DataGrip or terminal - it is up to you)
+* run unzipped file chunks_precomputed.sql (it is encoded in UTF-8, so it must be fine) by using this command in the root folder (AI-for-Metropolia) to insert preingested data into chunks table
+```
+psql -U your_db_username -d your_db_name -f data/chunks_precomputed.sql
+```
 ### Now you have your chunks of data(vectors) inside of PostgreSQL
 
 After everything is ready, what you need to run are 2 separate terminals:
@@ -213,9 +218,9 @@ One for ollama, one for server.
 ollama run llama3
 ```
 
-* Run flask server in the second terminal
+* Run app.py - flask server in the second terminal
 
-After these services running, opend frontend.html in your browser and check this app!
+After these services running, open frontend.html in your browser and check this app!
 
 Thank you for checking this app up!
 
