@@ -51,9 +51,7 @@ CREATE TABLE IF NOT EXISTS chunks (
 );
 """)
 conn.commit()
-
-
-# Function to store chunks
+# store chunks
 def store_chunks(url: str):
     # 1. Generate chunks with embeddings
     processed_chunks = process_url(url)
@@ -69,18 +67,6 @@ def store_chunks(url: str):
 
 # Example usage
 if __name__ == "__main__":
-    urls = [
-        "https://www.metropolia.fi/fi",
-        "https://www.metropolia.fi/en", 
-        "https://opinto-opas.metropolia.fi",
-        "https://opinto-opas.metropolia.fi/88094/fi/67/70361/3635/2643", 
-        "https://opinto-opas.metropolia.fi/88094/fi/67/70361",
-        "https://opinto-opas.metropolia.fi?lang=en",
-        "https://opinto-opas.metropolia.fi/88094/fi/67/70361/3635/2643?lang=en", 
-        "https://opinto-opas.metropolia.fi/88094/fi/67/70361?lang=en"
-    ]
-    for url in urls:
-        store_chunks(url)
     cur.close()
     conn.close()
     print("All done!")
