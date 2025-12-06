@@ -3,7 +3,7 @@ Using Flask to create a solution using AI for Metropolia
 
 # Overview
 
-This project is an AI-powered navigation assistant for Metropolia University of Applied Sciences.
+This project is an AI-powered chat assistant for students with the data of Metropolia University of Applied Sciences.
 It helps students quickly find information across the university’s website (e.g., schedules, course registration, student services) using:
 
 * Local LLM (via Ollama)
@@ -17,6 +17,7 @@ It helps students quickly find information across the university’s website (e.
 * RAG (Retrieval-Augmented Generation)
 
 *(NOT YET)* Students can start conversations, return later, and continue where they left off.
+
 The system retrieves relevant website content using embeddings and assists the user conversationally.
 For current demo project will be used a text from [link](https://metropolia.fi) and a bit further
 
